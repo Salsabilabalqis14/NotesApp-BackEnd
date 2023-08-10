@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const AuthorizationError = require('../../exceptions/AuthorizationError')
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 const { mapDBToModel } = require('../../utils');
 
 class NotesService {
@@ -10,8 +10,8 @@ class NotesService {
     this._pool = new Pool();
   }
 
-  async addNote({ 
-    title, body, tags, owner
+  async addNote({
+    title, body, tags, owner,
   }) {
     const id = nanoid(16);
     const createdAt = new Date().toISOString();
@@ -89,13 +89,13 @@ class NotesService {
     };
 
     const result = await this._pool.query(query);
-    
+
     if (!result.rows.length) {
       throw new NotFoundError('Catatan tidak ditemukan');
     }
-    
+
     const note = result.rows[0];
-    
+
     if (note.owner !== owner) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
